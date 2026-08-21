@@ -1,14 +1,24 @@
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 using TaskManagement.Data;
+using TaskManagement.Services;
+using TaskManagement.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler =
+            ReferenceHandler.IgnoreCycles;
+    });
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("TaskManagementDb")));
+
+builder.Services.AddScoped<IUserService, UserService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
-builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("TaskManagementDb")));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 

@@ -9,6 +9,8 @@ namespace TaskManagement.DTOs
         public string Email { get; set; } = null!;
         public string Password { get; set; } = null!;
         public string ConfirmPassword { get; set; } = null!;
+        public DateTime DateOfBirth { get; set; }
+        public string Gender { get; set; }
         public string PhoneNumber { get; set; } = null!;
         public decimal Salary { get; set; }
         public UserRole Role { get; set; }
