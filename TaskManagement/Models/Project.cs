@@ -17,6 +17,7 @@ namespace TaskManagement.Models
         public int CreatedById { get; set; }
         [Required(ErrorMessage = "Date of Creating project is required!!")]
         public DateTime CreatedDate { get; set; } = DateTime.Today;
+        public bool IsActive { get; set; } = true;
         public User CreatedBy { get; set; } = null!;
         //1 : many
         public ICollection<TaskItem> TaskItems { get; set; }
