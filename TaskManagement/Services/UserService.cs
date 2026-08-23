@@ -10,7 +10,6 @@ namespace TaskManagement.Services
     public class UserService : IUserService
     {
         private readonly AppDbContext _context;
-
         public UserService(AppDbContext context)
         {
             _context = context;
@@ -18,10 +17,7 @@ namespace TaskManagement.Services
 
         public async Task<IEnumerable<Object>> GetUserAsync()
         {
-            return await _context.Users
-                .Include(x => x.Project)
-                .Include(x => x.UserSkills)
-                .ThenInclude(x => x.Skill)
+            var users = await _context.Users
             .Select(x => new
             {
                 x.UserId,
@@ -35,31 +31,39 @@ namespace TaskManagement.Services
                 x.CreatedAt,
                 x.IsActive,
 
-                Project = x.Project == null ? null : new
-                {
-                    x.Project.ProjectId,
-                    x.Project.Title
-                },
-
                 Skills = x.UserSkills.Select(us => new
                 {
-                    us.SkillId,
                     us.Skill.Name,
                     us.ExperienceMonths,
                     us.IsCertified
                 })
             })
             .ToListAsync();
+            return users; 
         }
 
         public async Task<object> GetUserByIdAsync(int id)
         {
-            var user = await _context.Users
-                        .Include(x => x.Project)
-                        .Include(x => x.TaskItems)
-                        .Include(x => x.UserSkills)
-                        .ThenInclude(x => x.Skill)
-                        .FirstOrDefaultAsync(x => x.UserId == id);
+            var user = await _context.Users.Select(
+                x => new
+                {
+                    x.UserId,
+                    x.Name,
+                    x.Email,
+                    x.PhoneNumber,
+                    x.DateOfBirth,
+                    x.Salary,
+                    x.Gender,
+                    x.Role,
+                    x.CreatedAt,
+                    x.IsActive,
+                    Skills = x.UserSkills.Select(us => new
+                    {
+                        us.Skill.Name,
+                        us.ExperienceMonths,
+                        us.IsCertified
+                    })
+                }).FirstOrDefaultAsync(x => x.UserId == id);
 
             if(user == null)
             {
@@ -108,17 +112,11 @@ namespace TaskManagement.Services
             return new
             {
                 user.UserId,
-                user.Name,
-                user.Email,
-                user.PhoneNumber,
-                user.Role,
-                user.Salary,
-                user.Gender,
-                user.CreatedAt,
+                user
             };
         }
 
-        public async Task<object> UpdateUserAsync(int id, UpdateUserDto dto)
+        public async Task<object> UpdateUserAsync(int id, UserDto dto)
         {
             var user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == id);
             if(user == null)
@@ -148,7 +146,6 @@ namespace TaskManagement.Services
             user.IsActive = dto.IsActive;
 
             await _context.SaveChangesAsync();
-
             return user;
         }
 
@@ -162,7 +159,6 @@ namespace TaskManagement.Services
             }
 
             _context.Users.Remove(user);
-
             await _context.SaveChangesAsync();
         }
     }

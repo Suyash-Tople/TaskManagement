@@ -29,7 +29,8 @@ namespace TaskManagement.Data.Configurations
 
             //ReEnforce one to one
             builder.HasIndex(p => p.CreatedById)
-                    .IsUnique();
+                    .IsUnique()
+                    .HasFilter("[IsActive] = 1");
 
             //Project 1 => Many TaskItems
             builder.HasMany(p => p.TaskItems)

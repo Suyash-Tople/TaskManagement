@@ -16,37 +16,50 @@ namespace TaskManagement.Controllers
         }
 
         [HttpGet]
+        [Route("GetAllProjects")]
         public async Task<IActionResult> GetAllProjects()
         {
             return Ok(await _project.GetProjectsAsync());
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet]
+        [Route("GetProjectById/{id}")]
         public async Task<IActionResult> GetProjectById(int id)
         {
             return Ok(await _project.GetProjectByIdAsync(id));
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateNewProject(CreateProjectDto dto)
+        [Route("AddNewProject")]
+        public async Task<IActionResult> AddNewProject(CreateProjectDto dto)
         {
             var result = await _project.CreateProjectAsync(dto);
 
             return Ok(result);
         }
 
-        [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateProject(int id, UpdateProjectDto dto)
+        [HttpPut]
+        [Route("UpdateProject")]
+        public async Task<IActionResult> UpdateProject(int projectId, int managerId, ProjectDto dto)
         {
-            var result = await _project.UpdateProjectAsync(id, dto);
+            var result = await _project.UpdateProjectAsync(projectId, managerId, dto);
             return Ok(result);
         }
 
-        [HttpDelete("{id:int}")]
-        public async Task<IActionResult> DeleteProject(int id)
+        [HttpDelete]
+        [Route("DeleteProject")]
+        public async Task<IActionResult> DeleteProject(int projectId, int managerId)
         {
-            await _project.DeleteProjectAsync(id);
+            await _project.DeleteProjectAsync(projectId, managerId);
             return NoContent();
+        }
+
+        [HttpPut]
+        [Route("ChangeProjectManager")]
+        public async Task<IActionResult> ChangeProjectManager(int projectId, int currentManagerId, int managerId)
+        {
+            var result = await _project.ChangeProjectManager(projectId, currentManagerId, managerId);
+            return Ok(result);
         }
     }
 }

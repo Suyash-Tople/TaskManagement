@@ -1,15 +1,14 @@
 ﻿namespace TaskManagement.DTOs
 {
-    public class CreateProjectDto
+    public class ProjectDto
     {
         public string Title { get; set; } = null!;
         public string Description { get; set; } = null!;
-        public int CreatedById { get; set; } 
     }
 
-    public class UpdateProjectDto
+    public class CreateProjectDto : ProjectDto
     {
-        public string Title { get; set; } = null!;
-        public string Description { get; set; } = null!;
+        public int CreatedById { get; set; }
+
     }
 }
