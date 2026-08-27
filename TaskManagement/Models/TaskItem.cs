@@ -13,8 +13,10 @@ namespace TaskManagement.Models
         public string Title { get; set; } = string.Empty;
         [StringLength(5000)]
         public string? Descripton { get; set; }
-        [ForeignKey(nameof(Assignee))]
-        public int AssigneeId { get; set; }
+        [Required]
+        [ForeignKey(nameof(CreatedBy))]
+        public int CreatedById { get; set; }
+
         [Required]
         [ForeignKey(nameof(Project))]
         public int ProjectId { get; set; }
@@ -26,7 +28,7 @@ namespace TaskManagement.Models
         [Required]
         public Priority Priority { get; set; } = Priority.Low;
 
-        public User Assignee { get; set; } = null!;
+        public User CreatedBy { get; set; } = null!;
         public Project Project { get; set; } = null!;
     }
 }
