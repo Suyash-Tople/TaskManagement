@@ -39,8 +39,8 @@ namespace TaskManagement.Data.Configurations
                    .HasForeignKey<Project>(p => p.CreatedById);
 
             builder.HasMany(u => u.TaskItems)
-                   .WithOne(t => t.Assignee)
-                   .HasForeignKey(t => t.AssigneeId);
+                   .WithOne(t => t.CreatedBy)
+                   .HasForeignKey(t => t.CreatedById);
 
             builder.HasMany(u => u.UserSkills)
                    .WithOne(us => us.User)
