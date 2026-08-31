@@ -141,7 +141,7 @@ namespace TaskManagement.Services
             user.IsActive = dto.IsActive;
 
             await _context.SaveChangesAsync();
-            return user.UserId;
+            return new { userId = user.UserId };
         }
 
         public async Task DeleteAsync(int id)

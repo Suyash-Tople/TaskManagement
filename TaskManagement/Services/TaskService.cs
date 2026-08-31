@@ -42,6 +42,32 @@ namespace TaskManagement.Services
             return project;
         }
 
+        public async Task<Object> GetAllTasksByUserId(int userId)
+        {
+            var userExists = await _context.Users.Where(u => u.UserId == userId)
+                                .Select(u => new
+                                {
+                                    u.UserId,
+                                    u.Name,
+                                    u.Role,
+                                    TaskItems = u.TaskItems.Select(t => new
+                                    {
+                                        t.ProjectId,
+                                        t.TaskId,
+                                        t.Title,
+                                        t.Descripton,
+                                        t.Status,
+                                        t.DueDate,
+                                    }).ToList()
+                                }).ToListAsync();
+
+            if(userExists.Count == 0)
+            {
+                throw new NotFoundException("Either given user is not found or is not active");
+            }
+            return userExists;
+        }
+
         public async Task<Object> CreateTask(TaskItemDto dto)
         {
             var userActive = await _context.Users.Where(x => x.UserId == dto.CreatedById).Select(x => x.IsActive).FirstOrDefaultAsync();
