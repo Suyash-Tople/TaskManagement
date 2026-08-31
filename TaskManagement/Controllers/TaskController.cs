@@ -22,6 +22,14 @@ namespace TaskManagement.Controllers
         {
             return Ok(await _taskService.GetTasksByProjectId(projectId));
         }
+
+        [HttpGet]
+        [Route("GetAllTasksByUserId")]
+        public async Task<Object> GetAllTasksByUserId(int userId)
+        {
+            return Ok(await _taskService.GetAllTasksByUserId(userId));
+        }
+
         [HttpPost]
         [Route("CreateNewTask")]
         public async Task<IActionResult> CreateNewTask(TaskItemDto dto)
@@ -29,6 +37,7 @@ namespace TaskManagement.Controllers
             var result = await _taskService.CreateTask(dto);
             return Ok(result);
         }
+
         [HttpPut]
         [Route("UpdateTask")]
         public async Task<IActionResult> UpdateTask(int taskId, TaskItemDto dto)
@@ -36,6 +45,7 @@ namespace TaskManagement.Controllers
             var result = await _taskService.UpdateTask(taskId, dto);
             return Ok(result);
         }
+
         [HttpDelete]
         [Route("DeleteTask")]
         public async Task<IActionResult> DeleteTask(int id)

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TaskManagement.DTOs;
 using TaskManagement.Services.Interfaces;
 
@@ -16,19 +15,21 @@ namespace TaskManagement.Controllers
         }
 
         [HttpGet]
+        [Route("GetAllUsersSkills")]
         public async Task<IActionResult> GetAllUsersSkills()
         {
             return Ok(await _userSkills.GetAllUsersSkills());
         }
 
         [HttpGet]
-        [Route("GetAllUserSkillsByUserId")]
+        [Route("GetUserSkillsByUserId")]
         public async Task<IActionResult> GetAllUserSkillsByUserId(int id)
         {
             return Ok(await _userSkills.GetUserSkillsById(id));
         }
 
         [HttpPost]
+        [Route("AddSkillToUser")]
         public async Task<IActionResult> AddSkillToUser(AddSkillToUserDto dto)
         {
             var result = await _userSkills.AddSkillToUser(dto);
@@ -36,13 +37,15 @@ namespace TaskManagement.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateUserSkill(int id, UpdateUserSkillDto dto)
+        [Route("UpdateUseSkill")]
+        public async Task<IActionResult> UpdateUserSkill(int userId, UpdateUserSkillDto dto)
         {
-            var result = await _userSkills.UpdateUserSkill(id, dto);
+            var result = await _userSkills.UpdateUserSkill(userId, dto);
             return Ok(result);
         }
 
         [HttpDelete]
+        [Route("DeleteUserSkill")]
         public async Task<IActionResult> DeleteUserSkill(int id)
         {
             await _userSkills.DeleteUserSkill(id);

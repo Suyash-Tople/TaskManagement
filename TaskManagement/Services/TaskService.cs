@@ -42,6 +42,32 @@ namespace TaskManagement.Services
             return project;
         }
 
+        public async Task<Object> GetAllTasksByUserId(int userId)
+        {
+            var userExists = await _context.Users.Where(u => u.UserId == userId)
+                                .Select(u => new
+                                {
+                                    u.UserId,
+                                    u.Name,
+                                    u.Role,
+                                    TaskItems = u.TaskItems.Select(t => new
+                                    {
+                                        t.ProjectId,
+                                        t.TaskId,
+                                        t.Title,
+                                        t.Descripton,
+                                        t.Status,
+                                        t.DueDate,
+                                    }).ToList()
+                                }).ToListAsync();
+
+            if(userExists.Count == 0)
+            {
+                throw new NotFoundException("Either given user is not found or is not active");
+            }
+            return userExists;
+        }
+
         public async Task<Object> CreateTask(TaskItemDto dto)
         {
             var userActive = await _context.Users.Where(x => x.UserId == dto.CreatedById).Select(x => x.IsActive).FirstOrDefaultAsync();
@@ -82,7 +108,7 @@ namespace TaskManagement.Services
             };
             _context.TaskItems.Add(taskItem);
             await _context.SaveChangesAsync();
-            return taskItem;
+            return new { TaskItemId = taskItem.TaskId };
         }
 
         public async Task<Object> UpdateTask(int taskId, TaskItemDto dto)
@@ -133,7 +159,7 @@ namespace TaskManagement.Services
             taskItem.Priority = dto.Priority;
             taskItem.ProjectId = dto.ProjectId;
             await _context.SaveChangesAsync();
-            return taskItem;
+            return new { TaskItemId = taskItem.TaskId };
         }
 
         public async Task DeleteTask(int taskId)
@@ -156,7 +182,7 @@ namespace TaskManagement.Services
             }
             taskExists.Status = status;
             await _context.SaveChangesAsync();
-            return taskExists;
+            return new { updatedStatus = taskExists.Status };
         }
     }
 }

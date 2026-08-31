@@ -96,7 +96,7 @@ namespace TaskManagement.Services
 
             _context.Projects.Add(project);
             await _context.SaveChangesAsync();
-            return project;
+            return new { projectId = project.ProjectId };
         }
 
         public async Task<Object> UpdateProjectAsync(int projectId, int managerId, ProjectDto dto)
@@ -122,7 +122,7 @@ namespace TaskManagement.Services
             project.Description = dto.Description;
 
             await _context.SaveChangesAsync();
-            return project;
+            return new { projectId = project.ProjectId };
         }
 
         public async Task DeleteProjectAsync(int projectId, int managerId)

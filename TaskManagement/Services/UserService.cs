@@ -30,13 +30,6 @@ namespace TaskManagement.Services
                 x.Role,
                 x.CreatedAt,
                 x.IsActive,
-
-                Skills = x.UserSkills.Select(us => new
-                {
-                    us.Skill.Name,
-                    us.ExperienceMonths,
-                    us.IsCertified
-                })
             })
             .ToListAsync();
             return users; 
@@ -112,7 +105,9 @@ namespace TaskManagement.Services
             return new
             {
                 user.UserId,
-                user
+                user.Name,
+                user.Role,
+                user.IsActive
             };
         }
 
@@ -146,7 +141,7 @@ namespace TaskManagement.Services
             user.IsActive = dto.IsActive;
 
             await _context.SaveChangesAsync();
-            return user;
+            return new { userId = user.UserId };
         }
 
         public async Task DeleteAsync(int id)
