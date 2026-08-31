@@ -16,19 +16,21 @@ namespace TaskManagement.Controllers
         }
 
         [HttpGet]
+        [Route("GetAllSkills")]
         public async Task<IActionResult> GetAllSkills()
         {
             return Ok(await _skillService.GetAllSkills());
         }
 
         [HttpGet]
-        [Route("GetSkillById")]
+        [Route("GetBySkillId")]
         public async Task<IActionResult> GetSkillById(int id)
         {
             return Ok(await _skillService.GetSkillById(id));
         }
 
         [HttpPost]
+        [Route("AddNewSkill")]
         public async Task<IActionResult> AddNewSkill(CreateSkillDto dto)
         {
             var result = await _skillService.AddSkill(dto);
@@ -36,6 +38,7 @@ namespace TaskManagement.Controllers
         }
 
         [HttpPut]
+        [Route("UpdateSkillDetails")]
         public async Task<IActionResult> UpdateSkill(int id, UpdateSkillDto dto)
         {
             var result = await _skillService.UpdateSkill(id, dto);
@@ -43,6 +46,7 @@ namespace TaskManagement.Controllers
         }
 
         [HttpDelete]
+        [Route("DeleteSkill")]
         public async Task<IActionResult> DeleteSkill(int id)
         {
             await _skillService.DeleteSkill(id);

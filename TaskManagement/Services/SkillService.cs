@@ -16,7 +16,13 @@ namespace TaskManagement.Services
         }
         public async Task<IEnumerable<Object>> GetAllSkills()
         {
-            return await _context.Skills.ToListAsync();
+            return await _context.Skills.Select(s => new
+            {
+                s.SkillId,
+                s.Name,
+                s.Description,
+                s.DifficultyLevel
+            }).ToListAsync();
         }
 
         public async Task<Object> GetSkillById(int id)
