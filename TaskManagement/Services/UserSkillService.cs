@@ -3,7 +3,6 @@ using TaskManagement.Data;
 using TaskManagement.DTOs;
 using TaskManagement.Exceptions;
 using TaskManagement.Models;
-using TaskManagement.Models.Enums;
 using TaskManagement.Services.Interfaces;
 
 namespace TaskManagement.Services
@@ -17,30 +16,19 @@ namespace TaskManagement.Services
         }
         public async Task<IEnumerable<Object>> GetAllUsersSkills()
         {
-            return await _context.UserSkills
-                        .Include(x => x.Skill)
-                        .Include(x => x.User)
+            return await _context.Users
                         .Select(x => new
                         {
-                            x.Id,
-                            x.ExperienceMonths,
-                            x.IsCertified,
-                            x.CertificateName,
-                            User = new
-                            {
-                                x.User.Name,
-                                x.User.Role,
-                                ProjectDetails = new
-                                {
-                                    x.User.Project.Title,
-                                    x.User.TaskItems.Count,
-                                }
-                            },
-                            Skill = new
-                            {
-                                x.Skill.Name,
-                                x.Skill.DifficultyLevel
-                            }
+                            x.UserId,
+                            x.Name,
+                            x.Role,
+                            Skill = x.UserSkills.Select(us => new {
+                                us.Id,
+                                us.Skill.Name,
+                                us.ExperienceMonths,
+                                us.IsCertified,
+                                us.CertificateName,
+                                }).ToList()
                         }).ToListAsync();
         }
 
@@ -52,29 +40,22 @@ namespace TaskManagement.Services
                 throw new NotFoundException("Either user does not exists or is not active.");
             }
 
-            var userSkills = await _context.UserSkills.Include(x => x.User).Include(x => x.Skill)
-                                .Where(x => x.UserId == userId)
-                                .Select(x => new
-                                {
-                                    x.Id,
-                                    User = new
-                                    {
-                                        x.User.Name,
-                                        x.User.Project,
-                                        x.User.IsActive,
-                                        x.User.Role,
-                                        ProjectDetails = new
-                                        {
-                                            x.User.Project.Title,
-                                            x.User.TaskItems.Count,
-                                        }
-                                    },
-                                    Skill = new
-                                    {
-                                        x.Skill.Name,
-                                        x.Skill.DifficultyLevel,
-                                    }
-                                }).ToListAsync();
+            var userSkills = await _context.Users
+                             .Where(u => u.UserId == userId)
+                             .Select(u => new
+                             {
+                                 u.Name,
+                                 u.Role,
+                                 u.IsActive,
+                                 Skills = u.UserSkills.Select(us => new
+                                 {
+                                     us.Id,
+                                     us.Skill.Name,
+                                     us.ExperienceMonths,
+                                     us.IsCertified,
+                                     us.CertificateName
+                                 }).ToList()
+                             }).ToListAsync();
             return userSkills;
         }
 
@@ -104,10 +85,10 @@ namespace TaskManagement.Services
 
             _context.UserSkills.Add(newUserSkill);
             await _context.SaveChangesAsync();
-            return newUserSkill;
+            return new { userId = user.UserId };
         }
 
-        public async Task<Object> UpdateUserSkill(int id, UpdateUserSkillDto dto)
+        public async Task<Object> UpdateUserSkill(int userId, UpdateUserSkillDto dto)
         {
             var userSkills = await _context.UserSkills.FindAsync(dto.UserSkillId);
 
@@ -121,7 +102,7 @@ namespace TaskManagement.Services
             userSkills.CertificateName = dto.CertificateName;
 
             await _context.SaveChangesAsync();
-            return userSkills;
+            return new { userId = userId };
         }
 
         public async Task DeleteUserSkill(int id)

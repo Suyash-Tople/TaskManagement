@@ -32,7 +32,6 @@ namespace TaskManagement.Services
             {
                 throw new NotFoundException($"There is no skill for skill id: {id}");
             }
-
             return skill;
         }
 
@@ -53,7 +52,7 @@ namespace TaskManagement.Services
 
             _context.Skills.Add(newSkill);
             await _context.SaveChangesAsync();
-            return newSkill;
+            return new { skillId = newSkill.SkillId };
         }
 
         public async Task<Object> UpdateSkill(int id, UpdateSkillDto dto)
@@ -69,7 +68,7 @@ namespace TaskManagement.Services
             skillExists.Description = dto.Description;
 
             await _context.SaveChangesAsync();
-            return skillExists;
+            return new { skillId = skillExists.SkillId };
         }
 
         public async Task DeleteSkill(int id)

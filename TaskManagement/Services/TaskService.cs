@@ -82,7 +82,7 @@ namespace TaskManagement.Services
             };
             _context.TaskItems.Add(taskItem);
             await _context.SaveChangesAsync();
-            return taskItem;
+            return new { TaskItemId = taskItem.TaskId };
         }
 
         public async Task<Object> UpdateTask(int taskId, TaskItemDto dto)
@@ -133,7 +133,7 @@ namespace TaskManagement.Services
             taskItem.Priority = dto.Priority;
             taskItem.ProjectId = dto.ProjectId;
             await _context.SaveChangesAsync();
-            return taskItem;
+            return new { TaskItemId = taskItem.TaskId };
         }
 
         public async Task DeleteTask(int taskId)
@@ -156,7 +156,7 @@ namespace TaskManagement.Services
             }
             taskExists.Status = status;
             await _context.SaveChangesAsync();
-            return taskExists;
+            return new { updatedStatus = taskExists.Status };
         }
     }
 }
