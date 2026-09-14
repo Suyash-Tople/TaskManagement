@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using TaskManagement.Data;
 using TaskManagement.DTOs;
 using TaskManagement.Exceptions;
@@ -10,9 +11,11 @@ namespace TaskManagement.Services
     public class UserService : IUserService
     {
         private readonly AppDbContext _context;
-        public UserService(AppDbContext context)
+        private readonly IPasswordHasher<User> _passwordHasher;
+        public UserService(AppDbContext context, IPasswordHasher<User> passwordHasher)
         {
             _context = context;
+            _passwordHasher = passwordHasher;
         }
 
         public async Task<IEnumerable<Object>> GetUserAsync()
@@ -89,7 +92,6 @@ namespace TaskManagement.Services
             {
                 Name = dto.Name,
                 Email = dto.Email,
-                Password = dto.Password,
                 PhoneNumber = dto.PhoneNumber,
                 DateOfBirth = dto.DateOfBirth,
                 Salary = dto.Salary,
@@ -99,6 +101,7 @@ namespace TaskManagement.Services
                 IsActive = true
             };
 
+            user.Password = _passwordHasher.HashPassword(user, dto.Password);
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
