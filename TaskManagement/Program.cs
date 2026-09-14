@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using TaskManagement.Data;
 using TaskManagement.Filters;
 using TaskManagement.Middleware;
+using TaskManagement.Models;
 using TaskManagement.Services;
 using TaskManagement.Services.Interfaces;
 
@@ -23,11 +25,13 @@ builder.Services.AddControllers()
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("TaskManagementDb")));
 
+
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<ISkillService, SkillService>();
 builder.Services.AddScoped<IUserSkillsService, UserSkillService>();
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
@@ -35,15 +39,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-
-using (var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider
-        .GetRequiredService<AppDbContext>();
-
-    await PasswordMigration.MigratePasswordAsync(context);
-}
-
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
