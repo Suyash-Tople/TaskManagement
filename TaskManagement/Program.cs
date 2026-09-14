@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using TaskManagement.Data;
+using TaskManagement.Filters;
 using TaskManagement.Middleware;
 using TaskManagement.Services;
 using TaskManagement.Services.Interfaces;
@@ -8,6 +9,8 @@ using TaskManagement.Services.Interfaces;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddControllers(options => options.Filters.Add<ApiResponseFilter>());
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -41,10 +44,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+app.UseMiddleware<RequestResponseLoggingMiddleware>();
 
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
 
 app.MapControllers();
 app.Run();

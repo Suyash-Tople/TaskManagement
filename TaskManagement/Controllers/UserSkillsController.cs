@@ -37,7 +37,7 @@ namespace TaskManagement.Controllers
         }
 
         [HttpPut]
-        [Route("UpdateUseSkill")]
+        [Route("UpdateUserSkill")]
         public async Task<IActionResult> UpdateUserSkill(int userId, UpdateUserSkillDto dto)
         {
             var result = await _userSkills.UpdateUserSkill(userId, dto);
