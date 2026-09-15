@@ -63,7 +63,6 @@ namespace TaskManagement.Services
                 throw new NotFoundException($"No skill exists with id: {id}");
             }
 
-            skillExists.Name = dto.Name;
             skillExists.DifficultyLevel = dto.DifficultyLevel;
             skillExists.Description = dto.Description;
 

@@ -53,15 +53,18 @@ namespace TaskManagement.Controllers
         public async Task<IActionResult> DeleteTask(int id)
         {
             await _taskService.DeleteTask(id);
-            return NoContent();
+            return Ok(new
+            {
+                Message = "Task deleted successfully"
+            });
         }
 
         [HttpPatch]
         [Route("UpdateTaskStatus")]
         public async Task<Object> UpdateTaskStatus(int taskId, ProjectTaskStatus status)
         {
-            await _taskService.UpdateTaskStatus(taskId, status);
-            return NoContent();
+            var result = await _taskService.UpdateTaskStatus(taskId, status);
+            return Ok(result);
         }
     }
 }

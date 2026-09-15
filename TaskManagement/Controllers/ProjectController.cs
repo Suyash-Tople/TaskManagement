@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TaskManagement.DTOs;
+using TaskManagement.Models.Enums;
 using TaskManagement.Services.Interfaces;
 
 namespace TaskManagement.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = Roles.Manager)]
     public class ProjectController : ControllerBase
     {
         private readonly IProjectService _project;
@@ -50,7 +53,10 @@ namespace TaskManagement.Controllers
         public async Task<IActionResult> DeleteProject(int projectId, int managerId)
         {
             await _project.DeleteProjectAsync(projectId, managerId);
-            return NoContent();
+            return Ok(new
+            {
+                Message = "Project deleted successfully"
+            });
         }
 
         [HttpPut]

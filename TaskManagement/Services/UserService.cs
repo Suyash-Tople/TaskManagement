@@ -134,7 +134,6 @@ namespace TaskManagement.Services
                 throw new DuplicateException("Another user already has this phone number.");
             }
 
-            user.Name = dto.Name;
             user.Email = dto.Email;
             user.PhoneNumber = dto.PhoneNumber;
             user.DateOfBirth = dto.DateOfBirth;
