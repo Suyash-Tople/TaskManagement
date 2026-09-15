@@ -182,7 +182,9 @@ namespace TaskManagement.Services
             }
             taskExists.Status = status;
             await _context.SaveChangesAsync();
-            return new { updatedStatus = taskExists.Status };
+            return new { taskId = taskId,
+                        updatedStatus = taskExists.Status 
+                        };
         }
     }
 }

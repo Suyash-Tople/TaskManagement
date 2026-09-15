@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TaskManagement.DTOs;
+using TaskManagement.Models.Enums;
 using TaskManagement.Services.Interfaces;
 
 namespace TaskManagement.Controllers
@@ -16,6 +18,7 @@ namespace TaskManagement.Controllers
 
         [HttpGet]
         [Route("GetAllUsers")]
+        [Authorize(Roles = Roles.Manager)]
         public async Task<IActionResult> GetUsers()
         {
             return Ok(await _userService.GetUserAsync());
@@ -30,6 +33,7 @@ namespace TaskManagement.Controllers
 
         [HttpPost]
         [Route("AddNewUser")]
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> CreateUser(CreateUserDto dto)
         {
             var result = await _userService.CreateUserAsync(dto);
@@ -46,10 +50,14 @@ namespace TaskManagement.Controllers
 
         [HttpDelete]
         [Route("DeleteUser/{id}")]
+        [Authorize(Roles = "Manager")]
         public async Task<IActionResult> DeleteUser(int id)
         {
             await _userService.DeleteAsync(id);
-            return NoContent();
+            return Ok(new
+            {
+                Message = "User deleted successfully"
+            });
         }
     }
 }

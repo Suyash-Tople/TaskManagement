@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TaskManagement.DTOs;
+using TaskManagement.Models.Enums;
 using TaskManagement.Services.Interfaces;
 
 namespace TaskManagement.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserSkillsController : ControllerBase
     {
         private readonly IUserSkillsService _userSkills;
@@ -16,6 +19,7 @@ namespace TaskManagement.Controllers
 
         [HttpGet]
         [Route("GetAllUsersSkills")]
+        [Authorize(Roles = Roles.Manager)]
         public async Task<IActionResult> GetAllUsersSkills()
         {
             return Ok(await _userSkills.GetAllUsersSkills());
@@ -49,7 +53,10 @@ namespace TaskManagement.Controllers
         public async Task<IActionResult> DeleteUserSkill(int id)
         {
             await _userSkills.DeleteUserSkill(id);
-            return NoContent();
+            return Ok(new
+            {
+                Message = "User Skill deleted successfully"
+            });
         }
     }
 }
